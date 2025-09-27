@@ -1,35 +1,30 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static com.arcrobotics.ftclib.kotlin.extensions.gamepad.GamepadExExtKt.whileActiveOnce;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.pedropathing.localization.Pose;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Bot;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.commands.FollowPathCommand;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.localization.Pose;
-import com.pedropathing.pathgen.BezierLine;
-import com.pedropathing.pathgen.Point;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterPivot;
 import org.firstinspires.ftc.teamcode.subsystems.ClawPivot;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveNoDriverView;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Limelight;
 
 import java.io.File;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class teleop extends CommandOpMode {
@@ -43,6 +38,7 @@ public class teleop extends CommandOpMode {
     private ClawPivot clawPivot;
     private Arm arm;
     private Intake intake;
+    private Limelight limelight;
     boolean SPECIMENMODE = false;
 
 
@@ -82,6 +78,8 @@ public class teleop extends CommandOpMode {
         drive.register();
        //vision = new Vision(bot);
         // vision.register();
+        limelight = new Limelight(bot);
+        limelight.register();
 
         drive = new MecanumDrive(bot);
         drive.register();/*
@@ -240,14 +238,16 @@ public class teleop extends CommandOpMode {
                                 new InstantCommand(() -> dClaw.setPositionD(grab - (0 * intakeRotatePerDegree))),
                                 new InstantCommand(() -> dClaw.setPositionI(grab + (0 * intakeRotatePerDegree)))
                         )
-                );
-        new GamepadButton(operatorGamepad, GamepadKeys.Button.RIGHT_BUMPER);
-                new SequentialCommandGroup(
+                );*/
+        new GamepadButton(operatorGamepad, GamepadKeys.Button.RIGHT_BUMPER)
+                .whileActiveOnce(
+                    new SequentialCommandGroup(
                         new InstantCommand(() -> drive.odo.resetPosAndIMU())
+
+                    )
                 );
 
 
-*/
 
   /*      new GamepadButton(operatorGamepad, GamepadKeys.Button.RIGHT_BUMPER);
             double ActualX = startingPose.getX();
@@ -261,6 +261,12 @@ public class teleop extends CommandOpMode {
             );
 */
 
+
+
+        new GamepadButton(operatorGamepad, GamepadKeys.Button.RIGHT_BUMPER)
+                .whileActiveOnce(
+                        new InstantCommand(() -> {drive.autoAlign();})
+                );
 
 
 

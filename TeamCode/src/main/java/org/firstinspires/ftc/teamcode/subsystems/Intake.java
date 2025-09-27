@@ -49,7 +49,7 @@ public class Intake extends SubsystemBase {
         if (bot.opertator.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
 
             intake.setMotorEnable();
-        } else if (bot.opertator.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
+        } else if (!bot.opertator.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
             intake.setMotorDisable();
 
 
