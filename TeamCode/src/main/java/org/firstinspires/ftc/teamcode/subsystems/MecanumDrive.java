@@ -166,7 +166,7 @@ public class MecanumDrive extends SubsystemBase {
         //                ", Y: " + pose.getY(DistanceUnit.MM) +
         //                ", Heading: " + pose.getHeading(AngleUnit.DEGREES));
 
-        FtcDashboard.getInstance().setImageQuality();
+        //FtcDashboard.getInstance().setImageQuality();
     }
 
 

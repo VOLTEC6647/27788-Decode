@@ -52,12 +52,8 @@ public class Intake extends SubsystemBase {
         } else if (!bot.opertator.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
             intake.setMotorDisable();
 
-
-            //bot.telem.addData("Pose",
-            //        "X: " + pose.getX(DistanceUnit.MM) +
-            //                ", Y: " + pose.getY(DistanceUnit.MM) +
-            //                ", Heading: " + pose.getHeading(AngleUnit.DEGREES));
         }
 
 
-    }}
+    }
+}

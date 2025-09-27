@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ClawPivot;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveNoDriverView;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Limelight;
 
 import java.io.File;
@@ -38,6 +39,7 @@ public class teleop extends CommandOpMode {
     private ClawPivot clawPivot;
     private Arm arm;
     private Intake intake;
+    private Shooter shooter;
     private Limelight limelight;
     boolean SPECIMENMODE = false;
 
@@ -82,7 +84,14 @@ public class teleop extends CommandOpMode {
         limelight.register();
 
         drive = new MecanumDrive(bot);
-        drive.register();/*
+        drive.register();
+
+        //intake = new Intake(bot);
+        //intake.register();
+
+        //shooter = new Shooter(bot);
+        //shooter.register();
+        /*
 
         dClaw = new DiffClaw(bot);
         dClaw.register();
