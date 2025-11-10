@@ -1,54 +1,58 @@
 package org.firstinspires.ftc.teamcode.subsystems;
-
-
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.pedropathing.localization.GoBildaPinpointDriver;
-import com.pedropathing.localization.Pose;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
+import com.arcrobotics.ftclib.command.Subsystem;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Bot;
 
-@Config
-public class Shooter extends SubsystemBase {
-    private final Bot bot;
+public class Shooter implements Subsystem {
 
-    private IMU imu = null;
-
-    private final DcMotorEx shooter;
-
-    public static Pose pose;
+    private DcMotorEx shooter;
+    @Config
+    public static class ShooterPIDF{
+        public static double kp = 0.009;
+        static double ki = 0;
+        static double kd = 0;
+        public static double kf = 0;
+    }
+    public static double targetVelocity = 6000;
+    private Bot bot;
 
 
     public Shooter(Bot bot) {
         this.bot = bot;
 
         shooter = bot.hMap.get(DcMotorEx.class, "Shooter");
-        shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        shooter.setMotorEnable();
+
+        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
 
+        shooter.setVelocityPIDFCoefficients(
+                ShooterPIDF.kp,
+                ShooterPIDF.ki,
+                ShooterPIDF.kd,
+                ShooterPIDF.kf
+        );
 
     }
 
-
-
-
-
     @Override
-    public void periodic() {
+    public void periodic(){
+        double currentVelocity = shooter.getVelocity();
+
+        bot.telem.addData("Target Velocity", targetVelocity);
+        bot.telem.addData("Current Velocity", currentVelocity);
 
 
-        if (bot.opertator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5){
-            shooter.setPower(1);
-        } else {
-            shooter.setPower(0);
-        }
+    }
+    public void setVelocity(){
+        shooter.setVelocity(targetVelocity);
 
 
     }

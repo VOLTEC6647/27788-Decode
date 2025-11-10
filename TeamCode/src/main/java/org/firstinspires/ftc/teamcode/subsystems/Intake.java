@@ -1,58 +1,36 @@
 package org.firstinspires.ftc.teamcode.subsystems;
-
-
-import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.pedropathing.localization.GoBildaPinpointDriver;
-import com.pedropathing.localization.Pose;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.arcrobotics.ftclib.command.Subsystem;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Bot;
 
-@Config
-public class Intake extends SubsystemBase {
-    private final Bot bot;
+public class Intake implements Subsystem {
 
-    private IMU imu = null;
+    private DcMotorEx intake;
 
-    private final DcMotorEx intake;
-
-    public static Pose pose;
+    private Bot bot;
+    public double power = 0;
 
 
     public Intake(Bot bot) {
         this.bot = bot;
 
-        intake = bot.hMap.get(DcMotorEx.class, "Intake");
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
+        intake = bot.hMap.get(DcMotorEx.class, "intake");
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 
 
-
-
-
     @Override
-    public void periodic() {
+    public void periodic(){
 
-
-        bot.telem.addData("ola", "si funciona");
-
-        if (bot.opertator.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
-
-            intake.setMotorEnable();
-        } else if (!bot.opertator.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
-            intake.setMotorDisable();
-
-        }
+    }
+    public void setPower(double power){
+        power = power;
+        intake.setPower(power);
 
 
     }
