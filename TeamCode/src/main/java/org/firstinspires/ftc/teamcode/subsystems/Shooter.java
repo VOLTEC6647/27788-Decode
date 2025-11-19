@@ -9,42 +9,42 @@ import org.firstinspires.ftc.teamcode.Bot;
 
 public class Shooter implements Subsystem {
 
-    private DcMotorEx shooter;
+    private DcMotorEx Shooter;
     @Config
     public static class ShooterPIDF{
-        public static double kp = 0.009;
-        static double ki = 0;
-        static double kd = 0;
-        public static double kf = 0;
+        public static double kp = 10;
+        public static double ki = 0;
+        public static double kd = 0.05;
+        public static double kf = -0.005;
     }
-    public static double targetVelocity = 6000;
+    public static double targetVelocity = 10000;
     private Bot bot;
 
 
     public Shooter(Bot bot) {
         this.bot = bot;
 
-        shooter = bot.hMap.get(DcMotorEx.class, "Shooter");
-
-        shooter.setMotorEnable();
-
-        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        Shooter = bot.hMap.get(DcMotorEx.class, "Shooter");
 
 
-        shooter.setVelocityPIDFCoefficients(
+        Shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        Shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+
+        Shooter.setVelocityPIDFCoefficients(
                 ShooterPIDF.kp,
                 ShooterPIDF.ki,
                 ShooterPIDF.kd,
                 ShooterPIDF.kf
         );
 
+
     }
 
     @Override
     public void periodic(){
-        double currentVelocity = shooter.getVelocity();
+        double currentVelocity = Shooter.getVelocity();
 
         bot.telem.addData("Target Velocity", targetVelocity);
         bot.telem.addData("Current Velocity", currentVelocity);
@@ -52,7 +52,8 @@ public class Shooter implements Subsystem {
 
     }
     public void setVelocity(){
-        shooter.setVelocity(targetVelocity);
+        Shooter.setVelocity(targetVelocity);
+
 
 
     }

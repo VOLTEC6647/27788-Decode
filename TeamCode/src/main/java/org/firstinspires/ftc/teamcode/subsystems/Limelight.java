@@ -1,43 +1,96 @@
+/*
+
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.pedropathing.localization.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.arcrobotics.ftclib.command.Subsystem;
+
+import lombok.Getter;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Bot;
 
+@Config
+public class Limelight extends SubsystemBase {
 
-public class Limelight implements Subsystem {
+    private final Limelight3A camera;
+    @Getter private LLResult result;
+    public static double TURN_P = 0.05;
+
     private Bot bot;
-    private Limelight3A limelight;
 
-    public Limelight(Bot bot){
+
+    public Limelight(Bot bot) {
         this.bot = bot;
+        camera = bot.hMap.get(Limelight3A.class, "limelight");
 
-        limelight = bot.hMap.get(Limelight3A.class,"limelight");
-        bot.telem.setMsTransmissionInterval(11);
-        limelight.pipelineSwitch(0);
+        pipeline(0);
+        initializeCamera();
 
-        limelight.start();
     }
 
+    public void initializeCamera() {
+        camera.setPollRateHz(100);
+        camera.start();
+    }
+    public void pipeline(int switchPipeline){
+        camera.pipelineSwitch(switchPipeline);
+    }
+
+    public double getTurnPower() {
+        if (!result.isValid()) {
+            return 0.0;
+        }
+        double tx = getTx();
+
+        return -tx * TURN_P;
+    }
+
+    public double getTx() {
+        if (result == null) {
+            return 0;
+        }
+        return result.getTx();
+    }
+
+    public double getTy() {
+        if (result == null) {
+            return 0;
+        }
+        return result.getTy();
+    }
+
+
+
+    @Override
     public void periodic() {
-        LLResult result = limelight.getLatestResult();
+        result = camera.getLatestResult();
+
         if (result != null) {
             if (result.isValid()) {
                 Pose3D botpose = result.getBotpose();
-                MecanumDrive.odo.setPosition(new Pose(result.getBotpose().getPosition().x, result.getBotpose().getPosition().y, result.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS)));
+                MecanumDrive.odo.setPosition(
+                        new Pose(
+                                result.getBotpose().getPosition().x,
+                                result.getBotpose().getPosition().y,
+                                result.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS)
+                        )
+                );
 
-                bot.telem.addData("tx", result.getTx());
-                bot.telem.addData("ty", result.getTy());
-                bot.telem.addData("Botpose", botpose.toString());
+                bot.telem.addData("Turn Power", getTurnPower());
+                bot.telem.addData("Ty", getTy());
+                bot.telem.addData("Tx", getTx());
+                bot.telem.addData("Bot pose", botpose.toString());
+
             }
         }
     }
 }
+
+}
+
+ */

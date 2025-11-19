@@ -29,8 +29,6 @@ public class Vision extends SubsystemBase {
     public static double strafeConversionFactor = 6.6667;
     public static double cameraStrafeToBot = -20;
 
-
-
     private Bot bot;
 
 

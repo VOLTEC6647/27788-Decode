@@ -25,6 +25,9 @@ public class TeleopDriveCommand extends CommandBase {
         addRequirements(this.drivetrain);
     }
 
+    public static void setDefaultCommand(TeleopDriveCommand driveCommand) {
+    }
+
     @Override
     public void execute() {
         drivetrain.teleopDrive(
