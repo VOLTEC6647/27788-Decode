@@ -32,7 +32,7 @@ public class teleop extends CommandOpMode {
     private MecanumDrive drive;
     private Shooter Shooter;
 
-    private Vision vision;
+
     private Intake Intake;
 
 
@@ -65,8 +65,9 @@ public class teleop extends CommandOpMode {
         drive = new MecanumDrive(bot);
         drive.register();
 
-        vision = new Vision(bot);
-        vision.register();
+
+
+
 
         Intake = new Intake(bot);
         Intake.register();
