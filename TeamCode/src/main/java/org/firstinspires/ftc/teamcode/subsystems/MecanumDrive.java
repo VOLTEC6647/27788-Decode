@@ -34,6 +34,9 @@ public class MecanumDrive extends SubsystemBase {
 
     }
 
+    public static double kP_Heading = 1;
+    public static double HEADING_TOLERANCE = Math.toRadians(2); // 2 degrees
+
     public MecanumDrive(Bot bot) {
         this.bot = bot;
 
@@ -72,37 +75,44 @@ public class MecanumDrive extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // 3. Use 'limelight' (lowercase), which is the object, not the class
-        bot.telem.addData("Limelight Turn", limelight.getTurnPower());
-        bot.telem.addData("Tx", limelight.getTx());
-        bot.telem.addData("Ty", limelight.getTy());
-
-        if (bot.driver.gamepad.left_bumper){
-            // Pass the calculated turn power to the drive method
-            teleopDrive(limelight.getTurnPower(), 1);
-        }
-
         odo.update();
         pose = odo.getPosition();
 
+        // Telemetry
+        bot.telem.addData("Limelight Turn", limelight.getTurnPower());
+        bot.telem.addData("Tx", limelight.getTx());
+        bot.telem.addData("Ty", limelight.getTy());
         bot.telem.addData("EncoderMode",isEncoderMode);
         bot.telem.addData("FieldCentric",fieldCentric);
+        bot.telem.addData("Current Pose", "X: %.2f, Y: %.2f, H: %.2f", pose.getX(DistanceUnit.METER), pose.getY(DistanceUnit.METER), pose.getHeading(AngleUnit.DEGREES));
+
+
+        if (bot.driver.gamepad.left_bumper){
+            // limelight auto align
+            double x = -bot.driver.getLeftX();
+            double y = -bot.driver.getLeftY();
+            drive(x, y, limelight.getTurnPower());
+        } else if (bot.driver.gamepad.right_bumper) {
+            autoRotateToPoint();
+        } else {
+            teleopDrive(1.0);
+        }
     }
 
-    public void teleopDrive(double rx, double multiplier) {
-        double x = - bot.driver.getLeftX() * multiplier;
-        double y =  -bot.driver.getLeftY() * multiplier;
-
-
+    public void drive(double x, double y, double rx) {
         rx *= bot.rotMultiplier;
 
         double botHeading = pose.getHeading(AngleUnit.RADIANS);
 
+        // Rotate the movement direction by the bot's angle
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        rotX *= 1.1;
+        rotX = rotX * 1.1;  // Counteract imperfect strafing
 
+        // Denominator is the largest motor power (absolute value) or 1
+        // This ensures all the powers maintain the same ratio,
+        // but only if at least one is out of the range [-1, 1]
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;
         double backLeftPower = (rotY - rotX + rx) / denominator;
@@ -116,6 +126,45 @@ public class MecanumDrive extends SubsystemBase {
         frontRight.setPower(normalizedPowers[1]);
         backLeft.setPower(normalizedPowers[2]);
         backRight.setPower(normalizedPowers[3]);
+    }
+
+    public void teleopDrive(double multiplier) {
+        double x = - bot.driver.getLeftX() * multiplier;
+        double y =  -bot.driver.getLeftY() * multiplier;
+        double rx = -bot.driver.getRightX() * multiplier;
+        drive(x, y, rx);
+    }
+
+    public void autoRotateToPoint() {
+        // Target
+        double targetX = 0;
+        double targetY = 0;
+
+        // Calculate the error
+        double xError = targetX - pose.getX(DistanceUnit.METER);
+        double yError = targetY - pose.getY(DistanceUnit.METER);
+
+        // Calculate desired heading to face the target
+        double targetHeading = Math.atan2(yError, xError);
+        double headingError = AngleUnit.normalizeRadians(targetHeading - pose.getHeading(AngleUnit.RADIANS));
+
+        if (Math.abs(headingError) < HEADING_TOLERANCE) {
+            drive(0, 0, 0); // Stop the robot
+            return;
+        }
+
+        // P-controllers
+        double xPower = 0; // Only rotate, no translational movement
+        double yPower = 0; // Only rotate, no translational movement
+        double headingPower = headingError * kP_Heading;
+
+        drive(xPower, yPower, headingPower);
+
+        // Telemetry
+        bot.telem.addData("Target Heading", "H: %.2f", Math.toDegrees(targetHeading));
+        bot.telem.addData("Current Heading", "H: %.2f", pose.getHeading(AngleUnit.DEGREES));
+        bot.telem.addData("Heading Error", "H: %.2f", Math.toDegrees(headingError));
+        bot.telem.addData("Power", "H: %.2f", headingPower);
     }
 
     public void resetEncoders() {
