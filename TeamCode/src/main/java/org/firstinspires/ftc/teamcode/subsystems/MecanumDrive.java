@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.Bot;
 import org.firstinspires.ftc.teamcode.Vision.Limelight; // Import your custom class
 import org.firstinspires.ftc.teamcode.utils.ImuGlobal;
 
+import java.net.PortUnreachableException;
+
 @Config
 public class MecanumDrive extends SubsystemBase {
     private final Bot bot;
@@ -25,10 +27,11 @@ public class MecanumDrive extends SubsystemBase {
     public static GoBildaPinpointDriver odo;
     public static boolean fieldCentric = true;
     public static Pose2D pose;
+    public static Rotation2d rotation2D;
     private boolean isEncoderMode = false;
-
     public Rotation2d getRobotOrientation() {
         return new Rotation2d(0);
+
     }
 
     public MecanumDrive(Bot bot) {
@@ -87,8 +90,9 @@ public class MecanumDrive extends SubsystemBase {
     }
 
     public void teleopDrive(double rx, double multiplier) {
-        double x = -bot.driver.getLeftX() * multiplier;
-        double y = -bot.driver.getLeftY() * multiplier;
+        double x = - bot.driver.getLeftX() * multiplier;
+        double y =  -bot.driver.getLeftY() * multiplier;
+
 
         rx *= bot.rotMultiplier;
 

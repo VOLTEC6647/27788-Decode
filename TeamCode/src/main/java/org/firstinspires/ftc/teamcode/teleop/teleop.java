@@ -77,8 +77,8 @@ public class teleop extends CommandOpMode {
         TeleopDriveCommand driveCommand = new TeleopDriveCommand(
                 drive,
                 () -> -driverGamepad.getRightX(),
-                () -> -driverGamepad.getLeftY(),
                 () -> driverGamepad.getLeftX(),
+                () -> -driverGamepad.getLeftY(),
                 () -> bot.speed
         );
         bot.speed = 0.75;
