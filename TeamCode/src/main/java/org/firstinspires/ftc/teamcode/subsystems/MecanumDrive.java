@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
@@ -84,6 +86,11 @@ public class MecanumDrive extends SubsystemBase {
 
         bot.telem.addData("EncoderMode",isEncoderMode);
         bot.telem.addData("FieldCentric",fieldCentric);
+        TelemetryPacket posePacket = new TelemetryPacket();
+        posePacket.put("Pose x", odo.getPosX(DistanceUnit.INCH));
+        posePacket.put("Pose y", odo.getPosY(DistanceUnit.INCH));
+        posePacket.put("Pose heading", odo.getHeading(AngleUnit.RADIANS));
+        FtcDashboard.getInstance().sendTelemetryPacket(posePacket);
     }
 
     public void teleopDrive(double rx, double multiplier) {
