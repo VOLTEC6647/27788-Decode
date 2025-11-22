@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Bot;
-import org.firstinspires.ftc.teamcode.Vision.Vision;
+import org.firstinspires.ftc.teamcode.Vision.Limelight;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
@@ -31,8 +31,7 @@ public class teleop extends CommandOpMode {
     private GamepadEx operatorGamepad;
     private MecanumDrive drive;
     private Shooter Shooter;
-
-
+    private Limelight Limelight;
     private Intake Intake;
 
 
@@ -65,13 +64,11 @@ public class teleop extends CommandOpMode {
         drive = new MecanumDrive(bot);
         drive.register();
 
-
-
-
-
         Intake = new Intake(bot);
         Intake.register();
 
+        Limelight = new Limelight(bot);
+        Limelight.register();
 
 
 
