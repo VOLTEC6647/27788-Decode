@@ -5,15 +5,14 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Bot;
 import org.firstinspires.ftc.teamcode.Vision.Limelight; // Import your custom class
+import org.firstinspires.ftc.teamcode.pedroPathing.constants;
 import org.firstinspires.ftc.teamcode.utils.ImuGlobal;
 
 @Config
@@ -24,9 +23,9 @@ public class MecanumDrive extends SubsystemBase {
     public Limelight limelight;
 
     private final DcMotorEx frontLeft, frontRight, backLeft, backRight;
-    public static GoBildaPinpointDriver odo;
+    public static Follower follower;
     public static boolean fieldCentric = true;
-    public static Pose2D pose;
+    public static Pose pose;
     private boolean isEncoderMode = false;
 
     public Rotation2d getRobotOrientation() {
@@ -42,16 +41,13 @@ public class MecanumDrive extends SubsystemBase {
         this.register();
         limelight.register();
 
-        odo = bot.hMap.get(GoBildaPinpointDriver.class,"odo");
-        odo.setOffsets(-82.66924000028, 110.830759999962, DistanceUnit.MM); // Fixed Unit to MM based on typical offset size
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        follower = constants.createFollower(bot.hMap);
 
         if (pose == null) {
-            pose = new Pose2D(DistanceUnit.INCH,0,0,AngleUnit.RADIANS,0);
+            pose = new Pose(0, 0, 0);
         }
 
-        odo.setPosition(new Pose2D(DistanceUnit.INCH,0,0,AngleUnit.RADIANS,0));
+        follower.setPose(new Pose(0, 0, 0));
 
         frontLeft = bot.hMap.get(DcMotorEx.class, "frontleft");
         frontRight = bot.hMap.get(DcMotorEx.class, "backleft"); // Double check your config names here
@@ -81,15 +77,16 @@ public class MecanumDrive extends SubsystemBase {
             teleopDrive(limelight.getTurnPower(), 1);
         }
 
-        odo.update();
-        pose = odo.getPosition();
+        follower.update();
+        pose = follower.getPose();
 
         bot.telem.addData("EncoderMode",isEncoderMode);
         bot.telem.addData("FieldCentric",fieldCentric);
         TelemetryPacket posePacket = new TelemetryPacket();
-        posePacket.put("Pose x", odo.getPosX(DistanceUnit.INCH));
-        posePacket.put("Pose y", odo.getPosY(DistanceUnit.INCH));
-        posePacket.put("Pose heading", odo.getHeading(AngleUnit.RADIANS));
+        // Convert Pedro units to inches: 1 Pedro unit = 0.5 inches
+        posePacket.put("Pose x", follower.getPose().getX()-72 );
+        posePacket.put("Pose y", follower.getPose().getY() -72);
+        posePacket.put("Pose heading", follower.getPose().getHeading());
         FtcDashboard.getInstance().sendTelemetryPacket(posePacket);
     }
 
@@ -99,7 +96,7 @@ public class MecanumDrive extends SubsystemBase {
 
         rx *= bot.rotMultiplier;
 
-        double botHeading = pose.getHeading(AngleUnit.RADIANS);
+        double botHeading = pose.getHeading();
 
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(botHeading);

@@ -74,8 +74,6 @@ public class autoaura extends LinearOpMode {
         f.setStartingPose(startingPose);
         f.update();
 
-
-
         SequentialCommandGroup auto = new SequentialCommandGroup(
                 new FollowPathCommand(f, f.pathBuilder()
                         .addPath(

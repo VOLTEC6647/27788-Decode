@@ -4,7 +4,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.pedropathing.localization.Pose;
+import com.pedropathing.ftc.FTCCoordinates;
+import com.pedropathing.geometry.PedroCoordinates;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
@@ -20,6 +22,10 @@ public class Limelight extends SubsystemBase {
     private final Limelight3A camera;
     @Getter private LLResult result;
     public static double TURN_P = 0.05;
+
+    // Conversion constants
+    private static final double METERS_TO_INCH = 39.37;
+    private static final double INCH_TO_PEDRO = 1.0 / 0.5; // 1 pedro unit = 0.5 in
 
     private Bot bot;
 
@@ -73,13 +79,17 @@ public class Limelight extends SubsystemBase {
         if (result != null) {
             if (result.isValid()) {
                 Pose3D botpose = result.getBotpose();
-                MecanumDrive.odo.setPosition(
-                        new Pose(
-                                result.getBotpose().getPosition().x,
-                                result.getBotpose().getPosition().y,
-                                result.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS)
-                        )
-                );
+
+                // --- Limelight meters -> inches -> FTC Pedro units ---
+                double xFTC = (botpose.getPosition().x * METERS_TO_INCH) * INCH_TO_PEDRO;
+                double yFTC = (botpose.getPosition().y * METERS_TO_INCH) * INCH_TO_PEDRO;
+                double headingRad = botpose.getOrientation().getYaw(AngleUnit.RADIANS);
+
+                // --- Build Pose in FTC coordinates, then convert to Pedro bottom-left ---
+                Pose pedroPose = new Pose(xFTC, yFTC, headingRad, FTCCoordinates.INSTANCE)
+                        .getAsCoordinateSystem(PedroCoordinates.INSTANCE);
+
+                MecanumDrive.follower.setPose(pedroPose);
 
                 bot.telem.addData("Turn Power", getTurnPower());
                 bot.telem.addData("Ty", getTy());
