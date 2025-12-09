@@ -33,3 +33,15 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
+android {
+    namespace = 'org.firstinspires.ftc.teamcode'
+
+    compileSdk 35
+    defaultConfig {
+        minSdk 24
+    }
+
+    packagingOptions {
+        jniLibs.useLegacyPackaging true
+    }
+}

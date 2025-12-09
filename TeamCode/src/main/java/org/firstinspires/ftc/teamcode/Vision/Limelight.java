@@ -1,11 +1,14 @@
+
 package org.firstinspires.ftc.teamcode.Vision;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.arcrobotics.ftclib.command.Subsystem;
+import com.arcrobotics.ftclib.controller.PIDFController;
+import com.pedropathing.ftc.FTCCoordinates;
+import com.pedropathing.geometry.PedroCoordinates;
+import com.pedropathing.geometry.Pose;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Bot;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
@@ -13,6 +16,18 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 public class Limelight implements Subsystem {
     private Bot bot;
     private Limelight3A limelight;
+
+    // Conversion constants
+    private static final double METERS_TO_INCH = 39.37;
+    private static final double INCH_TO_PEDRO = 1.0 / 0.5; // 1 pedro unit = 0.5 in
+
+    // PID controller for continuous rotation control
+    private final PIDFController rotationPID;
+
+    // Continuous input range for angle wrapping
+    private double minInput = -Math.PI;
+    private double maxInput = Math.PI;
+    private boolean continuousInputEnabled = false;
 
     // Variables to hold data so MecanumDrive can read them
     private double tx = 0;
@@ -25,6 +40,48 @@ public class Limelight implements Subsystem {
         bot.telem.setMsTransmissionInterval(11);
         limelight.pipelineSwitch(0);
         limelight.start();
+
+        // Initialize PID controller with continuous input enabled for angles
+        rotationPID = new PIDFController(-3, 0.0, 0.0, 0.0);
+        enableContinuousInput(-Math.PI, Math.PI);
+    }
+
+    /**
+     * Enables continuous input for angle wrapping.
+     * This ensures that angles like -PI and PI are treated as equivalent.
+     *
+     * @param minimumInput The minimum input value (e.g., -Math.PI)
+     * @param maximumInput The maximum input value (e.g., Math.PI)
+     */
+    private void enableContinuousInput(double minimumInput, double maximumInput) {
+        this.minInput = minimumInput;
+        this.maxInput = maximumInput;
+        this.continuousInputEnabled = true;
+    }
+
+    /**
+     * Wraps the error to ensure it's within the continuous input range.
+     * This handles angle wrapping for smooth rotation control.
+     *
+     * @param error The error between current and target values
+     * @return The wrapped error
+     */
+    private double wrapError(double error) {
+        if (!continuousInputEnabled) {
+            return error;
+        }
+
+        double inputRange = maxInput - minInput;
+
+        // Normalize error to be within [-inputRange/2, inputRange/2]
+        while (error > inputRange / 2) {
+            error -= inputRange;
+        }
+        while (error < -inputRange / 2) {
+            error += inputRange;
+        }
+
+        return error;
     }
 
     @Override
@@ -38,8 +95,17 @@ public class Limelight implements Subsystem {
 
             // Optional: Update Odometry if needed
             Pose3D botpose = result.getBotpose();
+
+            // --- Limelight meters -> inches -> FTC Pedro units ---
+            double xFTC = (botpose.getPosition().x * METERS_TO_INCH) * INCH_TO_PEDRO;
+            double yFTC = (botpose.getPosition().y * METERS_TO_INCH) * INCH_TO_PEDRO;
+            double headingRad = botpose.getOrientation().getYaw(AngleUnit.RADIANS);
+
+            // --- Build Pose in FTC coordinates, then convert to Pedro bottom-left ---
+            Pose pedroPose = new Pose(72.0+botpose.getPosition().x* METERS_TO_INCH, 72.0+botpose.getPosition().y* METERS_TO_INCH, headingRad);
+
             // careful with this update, it might conflict with Pinpoint if not synchronized
-            MecanumDrive.odo.setPosition(new Pose2D(DistanceUnit.METER, botpose.getPosition().x, botpose.getPosition().y, AngleUnit.RADIANS, botpose.getOrientation().getYaw(AngleUnit.RADIANS)));
+            MecanumDrive.follower.setPose(pedroPose);
 
             bot.telem.addData("tx", tx);
             bot.telem.addData("ty", ty);
@@ -61,15 +127,23 @@ public class Limelight implements Subsystem {
     }
 
     public double getTurnPower() {
-        if (!hasTarget) return 0;
+        // Get current pose from follower
+        Pose currentPose = MecanumDrive.follower.getPose();
 
-        // P-Controller: Adjust kP to change how fast it turns
-        // If it shakes, lower kP (e.g., 0.01)
-        // If it's too slow, raise kP (e.g., 0.05)
-        double kP = 0.03;
+        // Get current position (in inches)
+        double currentX = currentPose.getX();
+        double currentY = currentPose.getY();
+        double currentHeading = currentPose.getHeading();
 
-        // Important: You might need to change the sign (-tx or +tx)
-        // depending on your motor directions.
-        return -tx * kP;
+        // Calculate angle to target (0,0)
+        double angleToTarget = Math.atan2(-currentY, -currentX);
+
+        // Calculate the error and wrap it for continuous input
+        double error = angleToTarget - currentHeading;
+        error = wrapError(error);
+
+        // Use the wrapped error with the PID controller
+        // We use calculate with the wrapped setpoint
+        return rotationPID.calculate(currentHeading, currentHeading + error);
     }
 }

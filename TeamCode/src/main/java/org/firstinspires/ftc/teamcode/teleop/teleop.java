@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -30,9 +31,9 @@ public class teleop extends CommandOpMode {
     private GamepadEx driverGamepad;
     private GamepadEx operatorGamepad;
     private MecanumDrive drive;
-    private Shooter Shooter;
+    //private Shooter Shooter;
     private Limelight Limelight;
-    private Intake Intake;
+    //private Intake Intake;
 
 
     @Override
@@ -58,18 +59,18 @@ public class teleop extends CommandOpMode {
             bot.setRotationOffset(Rotation2d.fromDegrees(0));
         }
 
-        Shooter = new Shooter(bot);
-        Shooter.register();
-
-        drive = new MecanumDrive(bot);
-        drive.register();
-
-        Intake = new Intake(bot);
-        Intake.register();
 
         Limelight = new Limelight(bot);
         Limelight.register();
 
+        drive = new MecanumDrive(bot);
+        drive.register();
+
+        /*Intake = new Intake(bot);
+        Intake.register();
+
+        Shooter = new Shooter(bot);
+        Shooter.register();*/
 
 
 
@@ -77,8 +78,8 @@ public class teleop extends CommandOpMode {
         TeleopDriveCommand driveCommand = new TeleopDriveCommand(
                 drive,
                 () -> -driverGamepad.getRightX(),
-                () -> driverGamepad.getLeftX(),
                 () -> -driverGamepad.getLeftY(),
+                () -> driverGamepad.getLeftX(),
                 () -> bot.speed
         );
         bot.speed = 0.75;
@@ -87,7 +88,7 @@ public class teleop extends CommandOpMode {
         drive.setDefaultCommand(driveCommand);
 
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+        /*new GamepadButton(driverGamepad, GamepadKeys.Button.A)
                 .whileHeld(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> Shooter.setVelocity())
@@ -112,7 +113,7 @@ public class teleop extends CommandOpMode {
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> Intake.setVelocity( ))
                         )
-                );
+                );*/
 
 
 

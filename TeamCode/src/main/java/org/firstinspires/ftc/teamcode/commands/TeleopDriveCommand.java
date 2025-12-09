@@ -1,7 +1,7 @@
+
 package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
 
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 
@@ -32,6 +32,7 @@ public class TeleopDriveCommand extends CommandBase {
     @Override
     public void execute() {
         drivetrain.teleopDrive(
+                -leftStickX.getAsDouble(),
                 multiplier.getAsDouble()
         );
     }

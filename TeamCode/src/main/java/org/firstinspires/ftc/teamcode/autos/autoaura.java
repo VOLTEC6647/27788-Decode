@@ -1,13 +1,12 @@
 
 
+
 package org.firstinspires.ftc.teamcode.autos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.pedropathing.follower.Follower;
@@ -19,9 +18,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.Bot;
-import org.firstinspires.ftc.teamcode.Vision.Limelight;
 import org.firstinspires.ftc.teamcode.commands.FollowPathCommand;
-import org.firstinspires.ftc.teamcode.pedroPathing.constants;
+import org.firstinspires.ftc.teamcode.pedropathing.constants;
 
 
 
@@ -31,7 +29,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.constants;
 public class autoaura extends LinearOpMode {
 
     // Scoring Poses
-    public static Pose startingPose = new Pose(56.000, 8.000, Math.toRadians(-90));
+    public static Pose startingPose = new Pose(56.000, 8.000, Math.toRadians(90));
     public static Pose second = new Pose(57.5, 85, Math.toRadians(0));
     public static Pose third = new Pose(8.5, 84, Math.toRadians(125));
     public static Pose four = new Pose(57, 85, Math.toRadians(0));
@@ -58,15 +56,14 @@ public class autoaura extends LinearOpMode {
     private GamepadEx operatorGamepad;
 
 
-
     @Override
     public void runOpMode() {
         CommandScheduler.getInstance().reset();
-        telem = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
 
         bot = new Bot(telem, hardwareMap, driverGamepad, operatorGamepad);
 
-
+        telem = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         driverGamepad = new GamepadEx(gamepad1);
         operatorGamepad = new GamepadEx(gamepad2);
@@ -76,9 +73,6 @@ public class autoaura extends LinearOpMode {
         Follower f = constants.createFollower(bot.hMap);
         f.setStartingPose(startingPose);
         f.update();
-
-
-
 
         SequentialCommandGroup auto = new SequentialCommandGroup(
                 new FollowPathCommand(f, f.pathBuilder()
@@ -212,14 +206,7 @@ public class autoaura extends LinearOpMode {
             f.setMaxPower(10.0 / vs.getVoltage());
             CommandScheduler.getInstance().run();
             f.update();
-            TelemetryPacket posePacket = new TelemetryPacket();
-            posePacket.put("Pose x", f.getPose().getX());
-            posePacket.put("Pose y", f.getPose().getY());
-            posePacket.put("Pose heading", f.getPose().getHeading());
-            FtcDashboard.getInstance().sendTelemetryPacket(posePacket);
-            telem.update();
 
         }
     }
-
 }
