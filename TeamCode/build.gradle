@@ -30,6 +30,10 @@ dependencies {
     // the following is optional if you want vision
     implementation 'org.ftclib.ftclib:vision:2.1.0'
 
+    // >>> START OF ADDED DEPENDENCY <<<
+    // Replace <PRESET> and <VERSION> with the actual library values!
+    // >>> END OF ADDED DEPENDENCY <<<
+
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
@@ -42,6 +46,9 @@ android {
     }
 
     packagingOptions {
+        jniLibs {
+            pickFirsts += ['**/*.so']
+        }
         jniLibs.useLegacyPackaging true
     }
 }

@@ -1,4 +1,5 @@
 
+
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -30,7 +31,7 @@ public class teleop extends CommandOpMode {
     private MultipleTelemetry telem;
     private GamepadEx driverGamepad;
     private GamepadEx operatorGamepad;
-    private MecanumDrive drive;
+    private MecanumDrive MecanumDrive;
     //private Shooter Shooter;
     private Limelight Limelight;
     //private Intake Intake;
@@ -63,8 +64,8 @@ public class teleop extends CommandOpMode {
         Limelight = new Limelight(bot);
         Limelight.register();
 
-        drive = new MecanumDrive(bot);
-        drive.register();
+        MecanumDrive = new MecanumDrive(bot);
+        MecanumDrive.register();
 
         /*Intake = new Intake(bot);
         Intake.register();
@@ -76,7 +77,7 @@ public class teleop extends CommandOpMode {
 
 
         TeleopDriveCommand driveCommand = new TeleopDriveCommand(
-                drive,
+                MecanumDrive,
                 () -> -driverGamepad.getRightX(),
                 () -> -driverGamepad.getLeftY(),
                 () -> driverGamepad.getLeftX(),
@@ -84,8 +85,8 @@ public class teleop extends CommandOpMode {
         );
         bot.speed = 0.75;
 
-        register(drive);
-        drive.setDefaultCommand(driveCommand);
+        register(MecanumDrive);
+        MecanumDrive.setDefaultCommand(driveCommand);
 
 
         /*new GamepadButton(driverGamepad, GamepadKeys.Button.A)

@@ -11,8 +11,8 @@ import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -65,10 +65,10 @@ public class constants {
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .rightFrontMotorName("frontright")
-            .rightRearMotorName("backright")
-            .leftRearMotorName("backleft")
-            .leftFrontMotorName("frontleft")
+            .rightFrontMotorName("frontLeft")
+            .rightRearMotorName("frontRight")
+            .leftRearMotorName("backLeft")
+            .leftFrontMotorName("backRight")
             .leftFrontMotorDirection(DcMotorEx.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorEx.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorEx.Direction.FORWARD)
