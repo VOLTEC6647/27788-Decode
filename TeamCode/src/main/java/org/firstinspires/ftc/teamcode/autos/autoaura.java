@@ -1,47 +1,54 @@
-
-
-
 package org.firstinspires.ftc.teamcode.autos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.ParallelRaceGroup;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.pedropathing.follower.Follower;
-
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.Bot;
 import org.firstinspires.ftc.teamcode.commands.FollowPathCommand;
 import org.firstinspires.ftc.teamcode.pedropathing.constants;
-
-
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 
 @Config
-@Autonomous
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Blue Wall - Full Cycle")
 public class autoaura extends LinearOpMode {
+    public static Pose start = new Pose(56, 8, Math.toRadians(0));
+    public static Pose uno = new Pose(56, 83.5, Math.toRadians(0));
 
-    // Scoring Poses
-    public static Pose startingPose = new Pose(56.000, 8.000, Math.toRadians(90));
-    public static Pose second = new Pose(57.5, 85, Math.toRadians(0));
-    public static Pose third = new Pose(8.5, 84, Math.toRadians(125));
-    public static Pose four = new Pose(57, 85, Math.toRadians(0));
-    public static Pose five = new Pose(56.5, 60, Math.toRadians(0));
-    public static Pose six = new Pose(7, 59.5, Math.toRadians(0));
-    public static Pose seven = new Pose(56.5, 60.5, Math.toRadians(125));
-    public static Pose eigth = new Pose(57.5, 85.5, Math.toRadians(0));
-    public static Pose nine = new Pose(57, 34.5, Math.toRadians(0));
-    public static Pose ten = new Pose(6, 34.5, Math.toRadians(0));
-    public static Pose eleven = new Pose(56.5, 35, Math.toRadians(125));
-    public static Pose twelve = new Pose(57.5, 85.5, Math.toRadians(0));
-    public static Pose score = new Pose(55, 85, Math.toRadians(315));
+    public static Pose dos = new Pose(13, 83.5, Math.toRadians(0));
+
+    public static Pose tres = new Pose(56, 104, Math.toRadians(0));
+
+    public static Pose cuatro = new Pose(56, 60, Math.toRadians(0));
+
+    public static Pose cinco = new Pose(13, 60, Math.toRadians(0));
+
+    public static Pose seis = new Pose(56, 104, Math.toRadians(0));
+
+    public static Pose siete = new Pose(56, 36, Math.toRadians(0));
+
+    public static Pose ocho = new Pose(13, 36, Math.toRadians(0));
+
+    public static Pose nueve = new Pose(56, 104, Math.toRadians(0));
+
+    public static Pose diez = new Pose(3, 8, Math.toRadians(0));
+
+    public static Pose once = new Pose(56, 104, Math.toRadians(0));
 
 
 
@@ -49,164 +56,125 @@ public class autoaura extends LinearOpMode {
 
 
 
-    private Follower follower;
     private Bot bot;
     private MultipleTelemetry telem;
     private GamepadEx driverGamepad;
     private GamepadEx operatorGamepad;
+    private Intake intake;
+    private Shooter shooter;
+
 
 
     @Override
     public void runOpMode() {
         CommandScheduler.getInstance().reset();
 
-
-        bot = new Bot(telem, hardwareMap, driverGamepad, operatorGamepad);
-
         telem = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
         driverGamepad = new GamepadEx(gamepad1);
         operatorGamepad = new GamepadEx(gamepad2);
+        bot = new Bot(telem, hardwareMap, driverGamepad, operatorGamepad);
 
         VoltageSensor vs = bot.hMap.voltageSensor.iterator().next();
 
         Follower f = constants.createFollower(bot.hMap);
-        f.setStartingPose(startingPose);
+        f.setStartingPose(start);
         f.update();
 
-        SequentialCommandGroup auto = new SequentialCommandGroup(
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        startingPose,
-                                        second
-                                )
-                        )
-                        .setLinearHeadingInterpolation(startingPose.getHeading(),second.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        second,
-                                        third
+        Intake a = new Intake(bot);
+        a.register();
+        Shooter d = new Shooter(bot);
+        d.register();
 
-                                )
-                        )
-                        .setLinearHeadingInterpolation(second.getHeading(),third.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        third,
-                                        four
 
-                                )
-                        )
-                        .setLinearHeadingInterpolation(third.getHeading(),four.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        four,
-                                        five
 
-                                )
-                        )
-                        .setLinearHeadingInterpolation(four.getHeading(),five.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        five,
-                                        six
 
-                                )
-                        )
-                        .setLinearHeadingInterpolation(five.getHeading(),six.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        six,
-                                        seven
 
-                                )
-                        )
-                        .setLinearHeadingInterpolation(six.getHeading(),seven.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        seven,
-                                        eigth
+        SequentialCommandGroup wallAuto =
+                new SequentialCommandGroup(
+                        new FollowPathCommand(f, f.pathBuilder()
+                                .addPath(new BezierLine(start, uno))
+                                .setLinearHeadingInterpolation(start.getHeading(), uno.getHeading())
+                                .build()
+                        ),
+                        new SequentialCommandGroup(
+                                new FollowPathCommand(f, f.pathBuilder()
+                                        .addPath(new BezierLine(uno, dos))
+                                        .setLinearHeadingInterpolation(uno.getHeading(), dos.getHeading())
+                                        .build()
+                                ),
+                                new SequentialCommandGroup(
+                                        new FollowPathCommand(f, f.pathBuilder()
+                                                .addPath(new BezierLine(dos, tres))
+                                                .setLinearHeadingInterpolation(dos.getHeading(), tres.getHeading())
+                                                .build()
+                                        ),
+                                        new SequentialCommandGroup(
+                                                new FollowPathCommand(f, f.pathBuilder()
+                                                        .addPath(new BezierLine(tres, cuatro))
+                                                        .setLinearHeadingInterpolation(tres.getHeading(), cuatro.getHeading())
+                                                        .build()
+                                                ),
+                                                new SequentialCommandGroup(
+                                                        new FollowPathCommand(f, f.pathBuilder()
+                                                                .addPath(new BezierLine(cuatro, cinco))
+                                                                .setLinearHeadingInterpolation(cuatro.getHeading(), cinco.getHeading())
+                                                                .build()
+                                                        ),
+                                                        new SequentialCommandGroup(
+                                                                new FollowPathCommand(f, f.pathBuilder()
+                                                                        .addPath(new BezierLine(cinco, seis))
+                                                                        .setLinearHeadingInterpolation(cinco.getHeading(), seis.getHeading())
+                                                                        .build()
+                                                                ),
+                                                                new SequentialCommandGroup(
+                                                                        new FollowPathCommand(f, f.pathBuilder()
+                                                                                .addPath(new BezierLine(seis, siete))
+                                                                                .setLinearHeadingInterpolation(seis.getHeading(), siete.getHeading())
+                                                                                .build()
+                                                                        ),
+                                                                        new SequentialCommandGroup(
+                                                                                new FollowPathCommand(f, f.pathBuilder()
+                                                                                        .addPath(new BezierLine(siete, ocho))
+                                                                                        .setLinearHeadingInterpolation(siete.getHeading(), ocho.getHeading())
+                                                                                        .build()
+                                                                                ),
+                                                                                new SequentialCommandGroup(
+                                                                                        new FollowPathCommand(f, f.pathBuilder()
+                                                                                                .addPath(new BezierLine(ocho, nueve))
+                                                                                                .setLinearHeadingInterpolation(ocho.getHeading(), nueve.getHeading())
+                                                                                                .build()
+                                                                                        ),
+                                                                                        new SequentialCommandGroup(
+                                                                                                new FollowPathCommand(f, f.pathBuilder()
+                                                                                                        .addPath(new BezierLine(nueve, diez))
+                                                                                                        .setLinearHeadingInterpolation(nueve.getHeading(), diez.getHeading())
+                                                                                                        .build()
+                                                                                                ),
+                                                                                                new SequentialCommandGroup(
+                                                                                                        new FollowPathCommand(f, f.pathBuilder()
+                                                                                                                .addPath(new BezierLine(diez, once))
+                                                                                                                .setLinearHeadingInterpolation(diez.getHeading(), once.getHeading())
+                                                                                                                .build()
+                                                                                                        )
 
-                                )
-                        )
-                        .setLinearHeadingInterpolation(seven.getHeading(),eigth.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        eigth,
-                                        nine
 
-                                )
-                        )
-                        .setLinearHeadingInterpolation(eigth.getHeading(),nine.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        nine,
-                                        ten
-
-                                )
-                        )
-                        .setLinearHeadingInterpolation(nine.getHeading(),ten.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        ten,
-                                        eleven
-
-                                )
-                        )
-                        .setLinearHeadingInterpolation(ten.getHeading(),eleven.getHeading())
-                        .build()
-                ),
-                new FollowPathCommand(f, f.pathBuilder()
-                        .addPath(
-                                new BezierLine(
-                                        eleven,
-                                        twelve
-
-                                )
-                        )
-                        .setLinearHeadingInterpolation(eleven.getHeading(),twelve.getHeading())
-                        .build()
-                )
-        );
+                                                                                                )))))))))));
 
 
 
         waitForStart();
-        CommandScheduler.getInstance().schedule(auto);
+
+        f.setMaxPower(10.0 / vs.getVoltage());
+        CommandScheduler.getInstance().schedule(wallAuto);
 
         while (opModeIsActive()) {
-            f.setMaxPower(10.0 / vs.getVoltage());
             CommandScheduler.getInstance().run();
             f.update();
+            telem.addData("current pose", f.getPose());
 
+            telem.addData("Follower Status", f.isBusy() ? "Running Path" : "Finished");
+            telem.update();
         }
+        CommandScheduler.getInstance().reset();
     }
 }
