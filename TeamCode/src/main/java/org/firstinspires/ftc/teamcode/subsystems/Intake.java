@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.arcrobotics.ftclib.command.Subsystem;
@@ -10,14 +11,7 @@ import org.firstinspires.ftc.teamcode.Bot;
 public class Intake implements Subsystem {
 
     private DcMotorEx Intake;
-    @Config
-    public static class ShooterPIDF{
-        public static double kp = 10;
-        public static double ki = 0;
-        public static double kd = 0.05;
-        public static double kf = -0.005;
-    }
-    public static double targetVelocity = 10000;
+    public static double targetVelocity = 1800;
     private Bot bot;
 
 
@@ -27,17 +21,9 @@ public class Intake implements Subsystem {
         Intake = bot.hMap.get(DcMotorEx.class, "Intake");
 
 
-        Intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        Intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        Intake.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-
-        Intake.setVelocityPIDFCoefficients(
-                ShooterPIDF.kp,
-                ShooterPIDF.ki,
-                ShooterPIDF.kd,
-                ShooterPIDF.kf
-        );
+        Intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
 
     }
@@ -51,8 +37,8 @@ public class Intake implements Subsystem {
 
 
     }
-    public void setVelocity(){
-        Intake.setVelocity(targetVelocity);
+    public void setVelocity(double velocity){
+        Intake.setPower(velocity);
 
 
 
