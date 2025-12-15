@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.pedropathing.constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
+// aura .
 
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Blue Wall - Full Cycle")
