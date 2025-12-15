@@ -31,9 +31,9 @@ public class teleop extends CommandOpMode {
     private GamepadEx driverGamepad;
     private GamepadEx operatorGamepad;
     private MecanumDrive drive;
-    //private Shooter Shooter;
+    private Shooter Shooter;
     private Limelight Limelight;
-    //private Intake Intake;
+    private Intake Intake;
 
 
     @Override
@@ -66,19 +66,19 @@ public class teleop extends CommandOpMode {
         drive = new MecanumDrive(bot);
         drive.register();
 
-        /*Intake = new Intake(bot);
+        Intake = new Intake(bot);
         Intake.register();
 
         Shooter = new Shooter(bot);
-        Shooter.register();*/
+        Shooter.register();
 
 
 
 
         TeleopDriveCommand driveCommand = new TeleopDriveCommand(
                 drive,
-                () -> -driverGamepad.getRightX(),
-                () -> -driverGamepad.getLeftY(),
+                () -> -driverGamepad.getRightY(),
+                () -> -driverGamepad.getLeftX(),
                 () -> driverGamepad.getLeftX(),
                 () -> bot.speed
         );
@@ -88,32 +88,32 @@ public class teleop extends CommandOpMode {
         drive.setDefaultCommand(driveCommand);
 
 
-        /*new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
                 .whileHeld(
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> Shooter.setVelocity())
+                                new InstantCommand(() -> Shooter.setVelocity(1800))
                         )
                 );
 
         new GamepadButton(driverGamepad, GamepadKeys.Button.A)
                 .whenReleased(
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> Shooter.setVelocity())
+                                new InstantCommand(() -> Shooter.setVelocity(0))
                         )
                 );
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+        new GamepadButton(driverGamepad, GamepadKeys.Button.B)
                 .whileHeld(
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> Intake.setVelocity())
+                                new InstantCommand(() -> Intake.setVelocity(0.7))
                         )
                 );
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+        new GamepadButton(driverGamepad, GamepadKeys.Button.B)
                 .whenReleased(
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> Intake.setVelocity( ))
+                                new InstantCommand(() -> Intake.setVelocity(0 ))
                         )
-                );*/
+                );
 
 
 

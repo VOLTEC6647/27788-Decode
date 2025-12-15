@@ -12,12 +12,12 @@ public class Shooter implements Subsystem {
     private DcMotorEx Shooter;
     @Config
     public static class ShooterPIDF{
-        public static double kp = 10;
+        public static double kp = 60;
         public static double ki = 0;
-        public static double kd = 0.05;
-        public static double kf = -0.005;
+        public static double kd = 0;
+        public static double kf = 0;
     }
-    public static double targetVelocity = 10000;
+    public static double targetVelocity = 1200;
     private Bot bot;
 
 
@@ -27,7 +27,7 @@ public class Shooter implements Subsystem {
         Shooter = bot.hMap.get(DcMotorEx.class, "Shooter");
 
 
-        Shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+        Shooter.setDirection(DcMotorSimple.Direction.FORWARD);
 
         Shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
@@ -51,8 +51,8 @@ public class Shooter implements Subsystem {
 
 
     }
-    public void setVelocity(){
-        Shooter.setVelocity(targetVelocity);
+    public void setVelocity(double velocity){
+        Shooter.setVelocity(velocity);
 
 
 

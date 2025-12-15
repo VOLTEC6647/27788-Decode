@@ -53,10 +53,10 @@ public class MecanumDrive extends SubsystemBase {
         backLeft = bot.hMap.get(DcMotorEx.class, "frontright");
         backRight = bot.hMap.get(DcMotorEx.class, "backright");
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        /*frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD );
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);*/
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -90,8 +90,8 @@ public class MecanumDrive extends SubsystemBase {
     }
 
     public void teleopDrive(double rx, double multiplier) {
-        double x = bot.driver.getLeftY() * multiplier;   // Drive X (strafe) now uses Joystick Y (up/down) - **POSITIVE** sign for correct direction
-        double y = bot.driver.getLeftX() * multiplier;   // Drive Y (forward/back) now uses Joystick X (left/right) - Positive sign for now
+        double x = -bot.driver.getLeftX() * multiplier;   // Drive X (strafe) now uses Joystick Y (up/down) - **POSITIVE** sign for correct direction
+        double y = -bot.driver.getLeftY() * multiplier;   // Drive Y (forward/back) now uses Joystick X (left/right) - Positive sign for now
 
 
         rx *= -1;
@@ -117,7 +117,7 @@ public class MecanumDrive extends SubsystemBase {
         frontLeft.setPower(normalizedPowers[0]);
         frontRight.setPower(normalizedPowers[1]);
         backLeft.setPower(normalizedPowers[2]);
-        backRight.setPower(normalizedPowers[3]);
+        backRight.setPower(-normalizedPowers[3]);
     }
 
     public void resetEncoders() {
