@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Bot;
 import org.firstinspires.ftc.teamcode.Vision.Limelight;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
+import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -35,6 +36,7 @@ public class teleop extends CommandOpMode {
     private Shooter Shooter;
     private Limelight Limelight;
     private Intake Intake;
+    Indexer i;
 
 
     @Override
@@ -72,6 +74,11 @@ public class teleop extends CommandOpMode {
 
         Shooter = new Shooter(bot);
         Shooter.register();
+
+        i = new Indexer(hardwareMap, gamepad1);
+        i.register();
+
+        
 
 
 
