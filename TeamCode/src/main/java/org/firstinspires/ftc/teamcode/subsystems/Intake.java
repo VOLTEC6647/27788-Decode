@@ -16,6 +16,7 @@ public class Intake implements Subsystem {
 
 
     public Intake(Bot bot) {
+
         this.bot = bot;
 
         Intake = bot.hMap.get(DcMotorEx.class, "Intake");
