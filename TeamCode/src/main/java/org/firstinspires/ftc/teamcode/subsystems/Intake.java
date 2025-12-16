@@ -21,7 +21,7 @@ public class Intake implements Subsystem {
         Intake = bot.hMap.get(DcMotorEx.class, "Intake");
 
 
-        Intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        Intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         Intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 

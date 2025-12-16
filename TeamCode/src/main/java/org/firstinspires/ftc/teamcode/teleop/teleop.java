@@ -96,27 +96,27 @@ public class teleop extends CommandOpMode {
         MecanumDrive.setDefaultCommand(driveCommand);
 
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+        new GamepadButton(driverGamepad, GamepadKeys.Button.B)
                 .whileHeld(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> Shooter.setVelocity(1800))
                         )
                 );
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+        new GamepadButton(driverGamepad, GamepadKeys.Button.B)
                 .whenReleased(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> Shooter.setVelocity(0))
                         )
                 );
-        new GamepadButton(driverGamepad, GamepadKeys.Button.B)
+        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
                 .whileHeld(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> Intake.setVelocity(0.7))
                         )
                 );
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.B)
+        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
                 .whenReleased(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> Intake.setVelocity(0))

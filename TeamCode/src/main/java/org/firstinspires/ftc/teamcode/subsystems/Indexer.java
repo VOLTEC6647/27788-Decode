@@ -22,7 +22,7 @@ public class Indexer implements Subsystem {
 
     public void periodic(){
         if(g.x) {
-            Indexer.setPosition(1);
+            Indexer.setPosition(0.2);
         } else {
             Indexer.setPosition(0);
         }
