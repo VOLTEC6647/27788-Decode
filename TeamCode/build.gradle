@@ -41,6 +41,9 @@ repositories {
     maven {
         url = "https://repo.dairy.foundation/releases"
     }
+    maven {
+        url = "https://repo.dairy.foundation/snapshots"
+    }
 }
 
 dependencies {
