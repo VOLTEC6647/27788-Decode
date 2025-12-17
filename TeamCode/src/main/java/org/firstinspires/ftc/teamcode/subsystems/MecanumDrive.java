@@ -52,10 +52,10 @@ public class MecanumDrive extends SubsystemBase {
         backRight = bot.hMap.get(DcMotorEx.class, "backRight");
 
         // 4. Motor Directions
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE );
+        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // 5. Zero Power Behavior
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -96,7 +96,7 @@ public class MecanumDrive extends SubsystemBase {
      */
     public void teleopDrive(double rxInput, double speedMultiplier) {
         // 1. Read Inputs
-        double y = -bot.driver.getLeftY(); // Forward/Backward
+        double y = bot.driver.getLeftY(); // Forward/Backward
         double x = bot.driver.getLeftX() * STRAFE_MULTIPLIER; // Strafe
         double rx = rxInput; // Rotation
 
@@ -105,8 +105,8 @@ public class MecanumDrive extends SubsystemBase {
             double botHeading = pose.getHeading();
 
             // Rotate the velocity vector
-            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+            double rotX = x * Math.cos(-botHeading) - y * Math.sin(botHeading);
+            double rotY = x * Math.sin(-botHeading) + y * Math.cos(botHeading);
 
             x = rotX;
             y = rotY;
