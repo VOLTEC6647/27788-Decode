@@ -34,6 +34,8 @@ public class RobotConstants {
     public static double armGrabWall = 0.17;
     public static double armSaved = 0.4;
     public static double armAfterScore = 0.95;
+    public static double InOpen = 0.3;
+    public static double InClosed = 0;
 
     //slides
     public static double extended = 0.25;

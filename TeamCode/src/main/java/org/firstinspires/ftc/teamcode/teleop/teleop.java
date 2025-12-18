@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import static org.firstinspires.ftc.teamcode.utils.RobotConstants.*;
 
 
 import java.io.File;
@@ -37,7 +38,7 @@ public class teleop extends CommandOpMode {
     private Shooter Shooter;
     private Limelight Limelight;
     private Intake Intake;
-    Indexer i;
+    private Indexer indexer;
 
 
     @Override
@@ -76,8 +77,8 @@ public class teleop extends CommandOpMode {
         Shooter = new Shooter(bot);
         Shooter.register();
 
-        i = new Indexer(hardwareMap, gamepad1);
-        i.register();
+        indexer = new Indexer(bot);
+        indexer.register();
 
 
 
@@ -97,14 +98,14 @@ public class teleop extends CommandOpMode {
         MecanumDrive.setDefaultCommand(driveCommand);
 
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+        new GamepadButton(driverGamepad, GamepadKeys.Button.B)
                 .whileHeld(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> Shooter.setVelocity(6000))
                         )
                 );
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+        new GamepadButton(driverGamepad, GamepadKeys.Button.B)
                 .whenReleased(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> Shooter.setVelocity(0))
@@ -123,6 +124,20 @@ public class teleop extends CommandOpMode {
                                 new InstantCommand(() -> Intake.setVelocity(0))
                         )
                 );
+        new GamepadButton(driverGamepad, GamepadKeys.Button.X)
+                .whileHeld(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> indexer.setPosition(InOpen))
+                        )
+                );
+
+        new GamepadButton(driverGamepad, GamepadKeys.Button.X)
+                .whenReleased(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> indexer.setPosition(InClosed))
+                        )
+                );
+
 
 
 
