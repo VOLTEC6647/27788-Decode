@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -53,9 +54,9 @@ public class MecanumDrive extends SubsystemBase {
 
         // 4. Motor Directions
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE );
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // 5. Zero Power Behavior
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -96,11 +97,11 @@ public class MecanumDrive extends SubsystemBase {
      */
     public void teleopDrive(double rxInput, double speedMultiplier) {
         // 1. Read Inputs
-        double y = bot.driver.getLeftY(); // Forward/Backward
-        double x = bot.driver.getLeftX() * STRAFE_MULTIPLIER; // Strafe
-        double rx = rxInput; // Rotation
+        double y = -bot.driver.getLeftY(); // Forward/Backward
+        double x = -bot.driver.getLeftX() * STRAFE_MULTIPLIER; // Strafe
+        double rx = -rxInput;
 
-        // 2. Field Centric Math
+
         if (fieldCentric) {
             double botHeading = pose.getHeading();
 
@@ -128,7 +129,7 @@ public class MecanumDrive extends SubsystemBase {
         backRight.setPower(brRawPower * speedMultiplier);
     }
 
-    public void resetEncoders() {
+    public void  resetEncoders() {
         // Stop and Reset
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

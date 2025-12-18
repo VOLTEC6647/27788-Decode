@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,12 +12,12 @@ import org.firstinspires.ftc.teamcode.Bot;
 public class Intake implements Subsystem {
 
     private DcMotorEx Intake;
-    public static double targetVelocity = 1800;
+
+    public static double targetVelocity = 1200;
     private Bot bot;
 
 
     public Intake(Bot bot) {
-
         this.bot = bot;
 
         Intake = bot.hMap.get(DcMotorEx.class, "Intake");
@@ -25,7 +26,6 @@ public class Intake implements Subsystem {
         Intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         Intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-
 
     }
 

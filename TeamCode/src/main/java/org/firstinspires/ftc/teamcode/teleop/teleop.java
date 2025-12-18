@@ -1,5 +1,6 @@
 
 
+
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -78,7 +79,7 @@ public class teleop extends CommandOpMode {
         i = new Indexer(hardwareMap, gamepad1);
         i.register();
 
-        
+
 
 
 
@@ -99,7 +100,7 @@ public class teleop extends CommandOpMode {
         new GamepadButton(driverGamepad, GamepadKeys.Button.A)
                 .whileHeld(
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> Shooter.setVelocity(1800))
+                                new InstantCommand(() -> Shooter.setVelocity(6000))
                         )
                 );
 
