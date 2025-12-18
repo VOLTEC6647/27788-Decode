@@ -25,7 +25,7 @@ public class constants {
                     0.03,
                     0,
                     0,
-                    0.015
+                     0.015
             ))
             .translationalPIDFSwitch(4)
             .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(
@@ -65,13 +65,13 @@ public class constants {
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .rightFrontMotorName("frontLeft")
-            .rightRearMotorName("frontRight")
+            .rightFrontMotorName("frontRight")
+            .rightRearMotorName("backRight")
             .leftRearMotorName("backLeft")
-            .leftFrontMotorName("backRight")
-            .leftFrontMotorDirection(DcMotorEx.Direction.REVERSE)
-            .leftRearMotorDirection(DcMotorEx.Direction.FORWARD)
-            .rightFrontMotorDirection(DcMotorEx.Direction.FORWARD)
+            .leftFrontMotorName("frontLeft")
+            .leftFrontMotorDirection(DcMotorEx.Direction.FORWARD)
+            .leftRearMotorDirection(DcMotorEx.Direction.REVERSE)
+            .rightFrontMotorDirection(DcMotorEx.Direction.FORWARD )
             .rightRearMotorDirection(DcMotorEx.Direction.FORWARD);
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(-6.889764)

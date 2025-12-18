@@ -19,7 +19,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.Bot;
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.subsystems.ShooterPivot;
 import org.firstinspires.ftc.teamcode.subsystems.ClawPivot;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SetServo", group = "Tools")
@@ -29,7 +28,7 @@ public class setServo extends CommandOpMode {
     private GamepadEx driverGamepad;
     private GamepadEx operatorGamepad;
     private ClawPivot clawP;
-    private ShooterPivot claw;
+
 
     private Arm arm;
 
@@ -47,8 +46,7 @@ public class setServo extends CommandOpMode {
         clawP = new ClawPivot(bot);
         clawP.register();
 
-        claw = new ShooterPivot(bot);
-        claw.register();
+
 
         arm = new Arm(bot);
         arm.register();
@@ -84,7 +82,7 @@ public class setServo extends CommandOpMode {
     @Override
     public void run() {
         CommandScheduler.getInstance().run();
-        claw.setPosition(clawPos);
+
         clawP.setPosition(clawPivot);
         arm.setPosition(armPos);
 

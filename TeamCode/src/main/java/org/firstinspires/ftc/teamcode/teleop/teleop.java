@@ -1,6 +1,9 @@
 
 
+
 package org.firstinspires.ftc.teamcode.teleop;
+
+import static org.firstinspires.ftc.teamcode.pedropathing.Tuning.follower;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -12,12 +15,15 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Bot;
 import org.firstinspires.ftc.teamcode.Vision.Limelight;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
+import org.firstinspires.ftc.teamcode.pedropathing.constants;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
@@ -37,6 +43,9 @@ public class teleop extends CommandOpMode {
     private Limelight Limelight;
     private Intake Intake;
     Indexer i;
+    Follower f;
+
+    Pose start = new Pose(0 ,0,0);
 
 
     @Override
@@ -66,9 +75,6 @@ public class teleop extends CommandOpMode {
         Limelight = new Limelight(bot);
         Limelight.register();
 
-        MecanumDrive = new MecanumDrive(bot);
-        MecanumDrive.register();
-
         Intake = new Intake(bot);
         Intake.register();
 
@@ -78,50 +84,14 @@ public class teleop extends CommandOpMode {
         i = new Indexer(hardwareMap, gamepad1);
         i.register();
 
-        
+        f = constants.createFollower(hardwareMap);
+        f.setStartingPose(start);
+        f.update();
+        f.startTeleopDrive(true);
 
 
 
 
-        TeleopDriveCommand driveCommand = new TeleopDriveCommand(
-                MecanumDrive,
-                () -> -driverGamepad.getRightX(),
-                () -> -driverGamepad.getLeftY(),
-                () -> driverGamepad.getLeftX(),
-                () -> bot.speed
-        );
-        bot.speed = 0.75;
-
-        register(MecanumDrive);
-        MecanumDrive.setDefaultCommand(driveCommand);
-
-
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
-                .whileHeld(
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> Shooter.setVelocity(1800))
-                        )
-                );
-
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
-                .whenReleased(
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> Shooter.setVelocity(0))
-                        )
-                );
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
-                .whileHeld(
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> Intake.setVelocity(0.7))
-                        )
-                );
-
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
-                .whenReleased(
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> Intake.setVelocity(0))
-                        )
-                );
 
 
 
@@ -133,6 +103,16 @@ public class teleop extends CommandOpMode {
     @Override
     public void run() {
         CommandScheduler.getInstance().run();
+        if (driverGamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.3){
+            Shooter.setVelocity(6000);
+        }
+           else{Shooter.setVelocity((0));}
+        if (driverGamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.3){
+            Intake.setVelocity(0.7);
+        }
+        else{Intake.setVelocity((0));}
+        f.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x,-gamepad1.right_stick_x , false);
+        f.update();
         telem.update();
     }
 }

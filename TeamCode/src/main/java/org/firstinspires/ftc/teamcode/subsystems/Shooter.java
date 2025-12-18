@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -17,7 +18,7 @@ public class Shooter implements Subsystem {
         public static double kd = 0;
         public static double kf = 0;
     }
-    public static double targetVelocity = 1200;
+    public static double targetVelocity = 1000;
     private Bot bot;
 
 
