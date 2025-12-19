@@ -6,13 +6,10 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.arcrobotics.ftclib.command.Subsystem;
 import com.arcrobotics.ftclib.controller.PIDFController;
-import com.pedropathing.ftc.FTCCoordinates;
-import com.pedropathing.geometry.PedroCoordinates;
 import com.pedropathing.geometry.Pose;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Bot;
-import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 
 public class Limelight implements Subsystem {
     private Bot bot;
@@ -106,7 +103,7 @@ public class Limelight implements Subsystem {
             Pose pedroPose = new Pose(72.0+botpose.getPosition().x* METERS_TO_INCH, 72.0+botpose.getPosition().y* METERS_TO_INCH, headingRad);
 
             // careful with this update, it might conflict with Pinpoint if not synchronized
-            MecanumDrive.follower.setPose(pedroPose);
+              MecanumDrive.follower.setPose(pedroPose);
 
             bot.telem.addData("tx", tx);
             bot.telem.addData("ty", ty);

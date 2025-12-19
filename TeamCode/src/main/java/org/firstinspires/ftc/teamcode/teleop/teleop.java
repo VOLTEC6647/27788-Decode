@@ -3,8 +3,6 @@
 
 package org.firstinspires.ftc.teamcode.teleop;
 
-import static org.firstinspires.ftc.teamcode.pedropathing.Tuning.follower;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
@@ -22,10 +20,8 @@ import com.qualcomm.robotcore.util.ReadWriteFile;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Bot;
 import org.firstinspires.ftc.teamcode.Vision.Limelight;
-import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.pedropathing.constants;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
-import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
@@ -92,6 +88,32 @@ public class teleop extends CommandOpMode {
 
 
 
+        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+                .whileHeld(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> Shooter.setVelocity(1800))
+                        )
+                );
+
+        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+                .whenReleased(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> Shooter.setVelocity(0))
+                        )
+                );
+        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+                .whileHeld(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> Intake.setVelocity(0.7))
+                        )
+                );
+
+        new GamepadButton(driverGamepad, GamepadKeys.Button.A)
+                .whenReleased(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> Intake.setVelocity(0))
+                        )
+                );
 
 
 
